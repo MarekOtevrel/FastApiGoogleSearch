@@ -13,7 +13,12 @@
         <button type="submit">Search</button>
     </form>
 
-    <div id="results"></div>
+    <div id="results">
+        <h2>Precius results:</h2>
+        <ul id="resultsList"></ul>
+    </div>
+
+    <button id="downloadButton" style="display: none;">Download (OteGSresults.json)</button>
 
     <script>
         document.getElementById('searchForm').addEventListener('submit', async function(event) {
@@ -29,7 +34,19 @@
             });
 
             if (response.ok) {
-                // Nabídnout stažení souboru
+                const data = await response.json();
+                displayResults(data);
+
+                // Zobrazit tlačítko pro stažení
+                document.getElementById('downloadButton').style.display = 'block';
+            } else {
+                alert("Chyba při vyhledávání.");
+            }
+        });
+
+        document.getElementById('downloadButton').addEventListener('click', async function() {
+            const response = await fetch('/download');
+            if (response.ok) {
                 const blob = await response.blob();
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
@@ -40,9 +57,21 @@
                 document.body.removeChild(a);
                 window.URL.revokeObjectURL(url);
             } else {
-                alert("My Precius is lost and cannot be foud!");
+                alert("Chyba při stahování souboru.");
             }
         });
+
+        function displayResults(results) {
+            const resultsList = document.getElementById('resultsList');
+            resultsList.innerHTML = ''; // Vyčistit předchozí výsledky
+
+            results.forEach(item => {
+                const li = document.createElement('li');
+                //li.innerHTML = `<a href="${item.link}" target="_blank">${item.title}</a><p>${item.snippet}</p>`;
+                li.innerHTML = `<p><a href="${item.link}">${item.title}</a></p>`;
+                resultsList.appendChild(li);
+            });
+        }
     </script>
 </body>
 </html>
