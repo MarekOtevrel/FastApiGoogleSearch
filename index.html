@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vyhledávání na Googlu</title>
+</head>
+<body>
+    <h1>Vyhledávání na Googlu</h1>
+    <form id="searchForm">
+        <label for="query">Zadejte klíčové slovní spojení:</label>
+        <input type="text" id="query" name="query" required>
+        <button type="submit">Hledat</button>
+    </form>
+
+    <div id="results"></div>
+
+    <script>
+        document.getElementById('searchForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const query = document.getElementById('query').value;
+
+            fetch('/search', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query: query }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const resultsDiv = document.getElementById('results');
+                resultsDiv.innerHTML = '<h2>Výsledky:</h2>';
+                data.forEach(item => {
+                    resultsDiv.innerHTML += `<p><a href="${item.link}">${item.title}</a></p>`;
+                });
+            })
+            .catch(error => console.error('Chyba:', error));
+        });
+    </script>
+</body>
+</html>

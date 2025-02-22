@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: fasthtml-app
+    runtime: python
+    buildCommand: pip install “fastapi[standard]” requests
+    startCommand: uvicorn main:app --host 0.0.0.0 --port 10000
+    env: python
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
