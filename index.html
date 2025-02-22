@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vyhledávání na Googlu</title>
+    <title>My Precius Google Search</title>
 </head>
 <body>
-    <h1>Vyhledávání na Googlu</h1>
+    <h1>My Precius Google Search</h1>
     <form id="searchForm">
-        <label for="query">Zadejte klíčové slovní spojení:</label>
+        <label for="query">Precious search input:</label>
         <input type="text" id="query" name="query" required>
-        <button type="submit">Hledat</button>
+        <button type="submit">Search</button>
     </form>
 
     <div id="results"></div>
@@ -30,7 +30,7 @@
             .then(response => response.json())
             .then(data => {
                 const resultsDiv = document.getElementById('results');
-                resultsDiv.innerHTML = '<h2>Výsledky:</h2>';
+                resultsDiv.innerHTML = '<h2>Precious results:</h2>';
                 data.forEach(item => {
                     resultsDiv.innerHTML += `<p><a href="${item.link}">${item.title}</a></p>`;
                 });
