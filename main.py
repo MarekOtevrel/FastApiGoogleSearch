@@ -1,7 +1,10 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Request, Response
+from fastapi.responses import HTMLResponse, FileResponse
 import requests
 import json 
+import os
+from pathlib import Path
+
 
 
 app = FastAPI()
@@ -37,11 +40,18 @@ async def search(request: Request):
             "snippet": item.get("snippet")
         })
 
-    # Ulozeni do souboru
-    with open("OteGSresults.json", "w", encoding="utf-8") as file4save:
+
+    # Uložení do dočasného souboru
+    file_path = "OteGSresults.json"
+    with open(file_path, "w", encoding="utf-8") as file4save:
         json.dump(results, file4save, indent=4)
 
-    return results
+     # Vrátit soubor jako odpověď pro stažení
+    return FileResponse(
+        path=file_path,
+        filename="OteGSresults.json",
+        media_type="application/json"
+    )
 
 if __name__ == "__main__":
     import uvicorn

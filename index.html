@@ -16,26 +16,32 @@
     <div id="results"></div>
 
     <script>
-        document.getElementById('searchForm').addEventListener('submit', function(event) {
+        document.getElementById('searchForm').addEventListener('submit', async function(event) {
             event.preventDefault();
             const query = document.getElementById('query').value;
 
-            fetch('/search', {
+            const response = await fetch('/search', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ query: query }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                const resultsDiv = document.getElementById('results');
-                resultsDiv.innerHTML = '<h2>Precious results:</h2>';
-                data.forEach(item => {
-                    resultsDiv.innerHTML += `<p><a href="${item.link}">${item.title}</a></p>`;
-                });
-            })
-            .catch(error => console.error('Chyba:', error));
+            });
+
+            if (response.ok) {
+                // Nabídnout stažení souboru
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "OteGSresults.json";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            } else {
+                alert("My Precius is lost and cannot be foud!");
+            }
         });
     </script>
 </body>
