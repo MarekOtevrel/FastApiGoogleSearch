@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="cs">
+<!-- -->
 
 <head>
     <meta charset="UTF-8">
@@ -9,24 +10,25 @@
 
 <body>
     <h1>My Precious Google Search</h1>
+    <!-- Edit pole pro vstup dotazu na vyhledání.  -->
     <form id="searchForm">
         <label for="query">Precious search input:</label>
         <input type="text" id="query" name="query" required>
     </form>
 
-
-
+    <!-- Kontejner pro zobrazení výsledků vyhledávání. -->
     <div id="results">
         <h2>Precious results:</h2>
         <ul id="resultsList"></ul>
     </div>
 
+    <!-- Tlačítko pro stažení souboru OteGSresults.json -->
     <button id="downloadButton" style="display: none;">Download (OteGSresults.json)</button>
 
     <script>
         document.getElementById('searchForm').addEventListener('submit', async function (event) {
-            event.preventDefault();
-            const query = document.getElementById('query').value;
+            event.preventDefault(); // Zabrání defaultnímu chování formuláře
+            const query = document.getElementById('query').value; // Získá hodnotu zadanou do Edit pole
 
             const response = await fetch('/search', {
                 method: 'POST',
@@ -34,44 +36,46 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ query: query }),
-            });
+            }); // Odešle POST požadavek na endpoint "/search" obsahující zadaný text
 
             if (response.ok) {
                 const data = await response.json();
-                displayResults(data);
+                displayResults(data); // Zobrazí výsledky na stránku pomocí níže-definované funkce "displayResults"
 
-                // Zobrazit tlačítko pro stažení
+                // Zobrazí tlačítko pro stažení
                 document.getElementById('downloadButton').style.display = 'block';
             } else {
                 alert("Chyba při vyhledávání.");
             }
         });
 
-        document.getElementById('downloadButton').addEventListener('click', async function () {
-            const response = await fetch('/download');
+        // Stáhne soubor po aktivaci tlačítka pro stažení
+        document.getElementById('downloadButton').addEventListener('click', async function () { // Vybere tlačítko "downloadButton" a přidá listener na kliknutí.
+            const response = await fetch('/download'); // Odešle GET požadavek na stažení souboru.
             if (response.ok) {
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = "OteGSresults.json";
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                window.URL.revokeObjectURL(url);
+                const blob = await response.blob(); // Převede odpověď na objekt Blob, který reprezentuje binární data.
+                const url = window.URL.createObjectURL(blob); // Vytvoří dočasnou URL pro stažení souboru.
+                const a = document.createElement('a'); // Vytvoří nový <a> element (odkaz).
+                a.href = url; // Nastaví atribut href odkazu na dočasnou URL.
+                a.download = "OteGSresults.json"; // Nastaví název souboru, který se stáhne.
+                document.body.appendChild(a); // Přidá odkaz do těla dokumentu.
+                a.click(); // Simuluje kliknutí na odkaz, čímž se spustí stažení souboru.
+                document.body.removeChild(a); // Odstraní odkaz z dokumentu.
+                window.URL.revokeObjectURL(url); // Zruší dočasnou URL, aby se uvolnila paměť.
             } else {
                 alert("Chyba při stahování souboru.");
             }
         });
 
         function displayResults(results) {
-            const resultsList = document.getElementById('resultsList');
-            resultsList.innerHTML = ''; // Vyčistit předchozí výsledky
+            const resultsList = document.getElementById('resultsList'); // Vybere kontejner <ul> pro zobrazení výsledků vyhledávání, do kterého se vloží výsledky.
+            resultsList.innerHTML = ''; // Vyčistí obsah elementu, aby se nepřidávaly duplikáty.
 
+            // Projde všechny výsledky a vytvoří pro každý z nich nový <li> element.
             results.forEach(item => {
                 const li = document.createElement('li');
-                li.innerHTML = `<p><a href="${item.link}">${item.title}</a></p>`;
-                resultsList.appendChild(li);
+                li.innerHTML = `<p><a href="${item.link}">${item.title}</a></p>`; // Vloží do <li> elementu odkaz na výsledek vyhledávání.
+                resultsList.appendChild(li); // Přidá <li> element do seznamu výsledků.
             });
         }
     </script>
