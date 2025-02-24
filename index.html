@@ -1,27 +1,30 @@
 <!DOCTYPE html>
 <html lang="cs">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Precius Google Search</title>
+    <title>My Precious Google Search</title>
 </head>
+
 <body>
-    <h1>My Precius Google Search</h1>
+    <h1>My Precious Google Search</h1>
     <form id="searchForm">
         <label for="query">Precious search input:</label>
         <input type="text" id="query" name="query" required>
-        <button type="submit">Search</button>
     </form>
 
+
+
     <div id="results">
-        <h2>Precius results:</h2>
+        <h2>Precious results:</h2>
         <ul id="resultsList"></ul>
     </div>
 
     <button id="downloadButton" style="display: none;">Download (OteGSresults.json)</button>
 
     <script>
-        document.getElementById('searchForm').addEventListener('submit', async function(event) {
+        document.getElementById('searchForm').addEventListener('submit', async function (event) {
             event.preventDefault();
             const query = document.getElementById('query').value;
 
@@ -44,7 +47,7 @@
             }
         });
 
-        document.getElementById('downloadButton').addEventListener('click', async function() {
+        document.getElementById('downloadButton').addEventListener('click', async function () {
             const response = await fetch('/download');
             if (response.ok) {
                 const blob = await response.blob();
@@ -67,11 +70,11 @@
 
             results.forEach(item => {
                 const li = document.createElement('li');
-                //li.innerHTML = `<a href="${item.link}" target="_blank">${item.title}</a><p>${item.snippet}</p>`;
                 li.innerHTML = `<p><a href="${item.link}">${item.title}</a></p>`;
                 resultsList.appendChild(li);
             });
         }
     </script>
 </body>
+
 </html>
